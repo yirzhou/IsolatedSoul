@@ -27,6 +27,39 @@ impl DB {
         return self.conn.execute(QUERY_CREATE_TABLE, NO_PARAMS);
     }
 
+    pub fn populate_table_tx(&mut self, records: &Vec<records::Row>) -> Result<usize> {
+        let mut num_rows_affected: usize = 0;
+        let tx = self.conn.transaction().unwrap();
+        for record in records {
+            if tx
+                .execute(
+                    QUERY_INSERT,
+                    &[
+                        &record.firstname,
+                        &record.lastname,
+                        &record.birthday,
+                        &record.platform,
+                    ],
+                )
+                .unwrap()
+                == 1
+            {
+                num_rows_affected += 1
+            };
+        }
+        if num_rows_affected != records.len() {
+            println!(
+                "Row numbers do not match: {} rows affected vs {} records",
+                num_rows_affected,
+                records.len()
+            );
+        } else {
+            println!("{} rows have been inserted.", num_rows_affected);
+        }
+        tx.commit().unwrap();
+        Ok(num_rows_affected)
+    }
+
     pub fn populate_table(&self, records: &Vec<records::Row>) -> Result<usize> {
         let mut num_rows_affected: usize = 0;
         for record in records {
@@ -57,6 +90,31 @@ impl DB {
             println!("{} rows have been inserted.", num_rows_affected);
         }
         Ok(num_rows_affected)
+    }
+
+    pub fn fetch_all(&self) -> Option<Vec<records::Row>> {
+        let mut stmt = self
+            .conn
+            .prepare("SELECT firstname, lastname, birthday, platform FROM birthday")
+            .unwrap();
+
+        let mut birthdays = Vec::new();
+
+        let birthday_iter = stmt
+            .query_map(NO_PARAMS, |row| {
+                Ok(records::Row {
+                    firstname: row.get(0)?,
+                    lastname: row.get(1)?,
+                    birthday: row.get(2)?,
+                    platform: row.get(3)?,
+                })
+            })
+            .unwrap();
+
+        for birthday in birthday_iter {
+            birthdays.push(birthday.unwrap());
+        }
+        Some(birthdays)
     }
 }
 
