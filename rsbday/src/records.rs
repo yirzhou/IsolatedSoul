@@ -1,7 +1,5 @@
 extern crate chrono;
 
-use chrono::offset::LocalResult;
-use chrono::prelude::*;
 use csv::Reader;
 use serde::Deserialize;
 use std::error::Error;

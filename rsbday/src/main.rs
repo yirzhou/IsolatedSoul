@@ -23,10 +23,10 @@ fn main() {
         file_path: FILE_PATH_CSV.to_string(),
     };
     let mut db = db::new(FILE_PATH_DB);
-    let mut num_rows_affected: usize;
+
     let records = preprocessor.read_data().unwrap();
     db.create_table().unwrap();
-    num_rows_affected = db.populate_table_tx(&records).unwrap();
+    db.populate_table_tx(&records).unwrap();
 
     if let Some(birthdays) = db.fetch_all() {
         if birthdays.len() > 0 {

@@ -1,6 +1,5 @@
 extern crate rusqlite;
 
-use rusqlite::types::ToSql;
 use rusqlite::{Connection, Result, NO_PARAMS};
 
 use crate::records;
