@@ -7,8 +7,8 @@ pub struct Person {
 }
 
 pub fn get_month_date(md: &String) -> (u32, u32) {
-    let month_str = md[0..1].to_string();
-    let date_str = md[2..3].to_string();
+    let month_str = md[0..2].to_string();
+    let date_str = md[2..].to_string();
 
     (
         month_str.parse::<u32>().unwrap(),
