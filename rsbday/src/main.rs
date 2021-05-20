@@ -1,4 +1,5 @@
 use chrono::prelude::*;
+use chrono::Duration;
 use std::fs::remove_file;
 use std::path::Path;
 use std::process;
@@ -29,18 +30,49 @@ fn main() {
 
     if let Some(birthdays) = db.fetch_all() {
         if birthdays.len() > 0 {
+            let dt = chrono::Local::today();
             // Get friends having birthdays today
-            let dt = chrono::Local::now();
-            let month_today = dt.month();
-            let day_today = dt.day();
-            let people: Vec<utils::Person> =
-                utils::happy_birthday(month_today, day_today, &birthdays);
-            println!(
-                "==> There are {} people having their birthday today!",
-                people.len()
-            );
-            for person in people {
-                println!("{} {}", person.firstname, person.lastname);
+            {
+                let month = dt.month();
+                let day = dt.day();
+                let people: Vec<utils::Person> = utils::happy_birthday(month, day, &birthdays);
+                println!(
+                    "==> There are {} people having their birthday today!",
+                    people.len()
+                );
+                for person in people {
+                    println!("{} {}", person.firstname, person.lastname);
+                }
+            }
+
+            // Get friends who had birthdays yesterday.
+            {
+                let dt_yesterday = dt - Duration::days(1);
+                let month = dt_yesterday.month();
+                let day = dt_yesterday.day();
+                let people: Vec<utils::Person> = utils::happy_birthday(month, day, &birthdays);
+                println!(
+                    "==> There are {} people having their birthday yesterday!",
+                    people.len()
+                );
+                for person in people {
+                    println!("{} {}", person.firstname, person.lastname);
+                }
+            }
+
+            // Get friends who had birthdays tomorrow.
+            {
+                let dt_yesterday = dt + Duration::days(1);
+                let month = dt_yesterday.month();
+                let day = dt_yesterday.day();
+                let people: Vec<utils::Person> = utils::happy_birthday(month, day, &birthdays);
+                println!(
+                    "==> There are {} people having their birthday tomorrow!",
+                    people.len()
+                );
+                for person in people {
+                    println!("{} {}", person.firstname, person.lastname);
+                }
             }
         } else {
             println!("Nothing for today!");
