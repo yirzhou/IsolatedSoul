@@ -4,9 +4,6 @@ use csv::Reader;
 use serde::Deserialize;
 use std::error::Error;
 
-const PLATFORM_WECHAT: &str = "wechat";
-const PLATFORM_FACEBOOK: &str = "facebook";
-
 #[derive(Debug, Deserialize, Eq, PartialEq)]
 pub struct Row {
     pub firstname: String,
