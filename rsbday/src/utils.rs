@@ -1,14 +1,15 @@
 use crate::records;
 
 use chrono::prelude::*;
-use chrono::Duration;
 use std::collections::HashMap;
+
 pub struct Person {
     pub firstname: String,
     pub lastname: String,
     pub birthday: String,
 }
 
+#[allow(dead_code)]
 pub fn get_month_date(md: &String) -> (u32, u32) {
     let month_str = md[0..2].to_string();
     let date_str = md[2..].to_string();
