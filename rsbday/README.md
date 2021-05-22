@@ -16,9 +16,26 @@ I cannot disclose any of my friends' birthdays so there's no DB file in this rep
 
 ### Application
 
-The application itself is a CLI app that doesn't take any argument for now. I just run the binary and it prints out the people having their birthdays yesterday, today, and tomorrow.
+The application itself is a CLI app that doesn't take any argument for now. ~~I just run the binary and it prints out the people having their birthdays yesterday, today, and tomorrow.~~ See the help page of the CLI:
+
+```bash
+rsbday 0.1.0
+yiren.chow@gmail.com <yiren.chow@gmail.com>
+Check out the people you love who are having birthdays recently!
+
+USAGE:
+    rsbday [FLAGS] [OPTIONS]
+
+FLAGS:
+    -h, --help       Prints help information
+    -r, --reset      Reset your sqlite database.
+    -V, --version    Prints version information
+
+OPTIONS:
+    -d, --day-range <DAY RANGE>    Sets a custom range of days
+```
 
 There are certain TODOs for the future:
 
-- Add a new entry
-- More granular control on date selection
+- [x] More granular control on date selection
+- [ ] Ability to add new birthdays/entries
