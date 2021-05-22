@@ -24,15 +24,19 @@ yiren.chow@gmail.com <yiren.chow@gmail.com>
 Check out the people you love who are having birthdays recently!
 
 USAGE:
-    rsbday [FLAGS] [OPTIONS]
+    rsbday [OPTIONS] --db-path <DB> [SUBCOMMAND]
 
 FLAGS:
     -h, --help       Prints help information
-    -r, --reset      Reset your sqlite database.
     -V, --version    Prints version information
 
 OPTIONS:
-    -d, --day-range <DAY RANGE>    Sets a custom range of days
+    -r, --day-range <DAY RANGE>    Sets a custom range of days
+        --db-path <DB>             The path to your database file
+
+SUBCOMMANDS:
+    help     Prints this message or the help of the given subcommand(s)
+    reset    Reset your sqlite database.
 ```
 
 There are certain TODOs for the future:

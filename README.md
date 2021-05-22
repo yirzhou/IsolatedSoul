@@ -1,6 +1,6 @@
 # Digital Minimalism
 
-My attempt of phasing out social media by realizing their core functionality that I need, by myself.
+My attempt of phasing out digital products/services by realizing only their core functionality that I need, by myself.
 
 ## What even is this?
 
