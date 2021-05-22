@@ -1,5 +1,7 @@
+extern crate colored;
 extern crate rusqlite;
 
+use colored::*;
 use rusqlite::{Connection, Result};
 
 use crate::records;
@@ -47,12 +49,19 @@ impl DB {
         }
         if num_rows_affected != records.len() {
             println!(
-                "Row numbers do not match: {} rows affected vs {} records",
-                num_rows_affected,
-                records.len()
+                "{}",
+                format!(
+                    "Row numbers do not match: {} rows affected vs {} records",
+                    num_rows_affected,
+                    records.len()
+                )
+                .red()
             );
         } else {
-            println!("{} rows have been inserted.", num_rows_affected);
+            println!(
+                "{}",
+                format!("{} rows have been inserted.", num_rows_affected).cyan()
+            );
         }
         tx.commit().unwrap();
         Ok(num_rows_affected)
