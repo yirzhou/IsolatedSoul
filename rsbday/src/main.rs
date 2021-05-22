@@ -17,25 +17,49 @@ mod utils;
 const FILE_PATH_CSV: &str = "./data/bdays.csv";
 const FILE_PATH_DB: &str = "./data/bdays.db";
 
-const RESET: bool = true;
+const ARG_RESET: &str = "reset";
+const ARG_DAYS: &str = "day-range";
 
 fn main() {
+    let mut reset: bool = false;
+    let mut day_range = 7;
     // Command-line argument parsing
     let matches = App::new("rsbday")
         .author(crate_authors!())
         .version(crate_version!())
         .about("Check out the people you love who are having birthdays recently!")
+        .arg(
+            Arg::with_name(ARG_RESET)
+                .short("r")
+                .long(ARG_RESET)
+                .help("Reset your sqlite database.")
+                .required(false),
+        )
+        .arg(
+            Arg::with_name(ARG_DAYS)
+                .short("d")
+                .long(ARG_DAYS)
+                .value_name("DAY RANGE")
+                .help("Sets a custom range of days")
+                .takes_value(true)
+                .required(false),
+        )
         .get_matches();
 
-    if RESET {
+    if matches.is_present(ARG_RESET) {
+        reset = true;
         if Path::new(FILE_PATH_DB).exists() {
             remove_file(FILE_PATH_DB).unwrap();
         }
     }
 
+    if let Some(arg_day_val) = matches.value_of(ARG_DAYS) {
+        day_range = arg_day_val.parse::<i64>().unwrap();
+    }
+
     let mut db = db::new(FILE_PATH_DB);
 
-    if RESET {
+    if reset {
         let preprocessor = records::RecordPreprocessor {
             file_path: FILE_PATH_CSV.to_string(),
         };
@@ -47,11 +71,11 @@ fn main() {
     if let Some(birthdays) = db.fetch_all() {
         if birthdays.len() > 0 {
             let dt = chrono::Local::today();
-            println!("Today is {}.\n", dt.format("%a %b %e %Y").to_string());
+            println!("Today is {}.\n", dt.format("%a %b %e").to_string());
 
             // Get people having birthdays between today - 7 days and today + 7 days.
             let mut map_dates: HashMap<String, Date<Local>> = HashMap::new();
-            for offset in -7..7 {
+            for offset in -day_range..day_range {
                 let dt = dt + Duration::days(offset);
                 let month = dt.month();
                 let day = dt.day();
