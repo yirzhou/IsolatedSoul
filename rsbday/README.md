@@ -40,6 +40,12 @@ SUBCOMMANDS:
     reset    Reset your sqlite database
 ```
 
+For example, the following command returns people celebrating their birthdays within today ± 10 days:
+
+```bash
+rsbday --db-path ./data/bdays.db -r 10
+```
+
 There are certain TODOs for the future:
 
 - [x] More granular control on date selection
