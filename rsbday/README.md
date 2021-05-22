@@ -18,8 +18,8 @@ I cannot disclose any of my friends' birthdays so there's no DB file in this rep
 
 The application itself is a CLI app that doesn't take any argument for now. ~~I just run the binary and it prints out the people having their birthdays yesterday, today, and tomorrow.~~ See the help page of the CLI:
 
-```bash
-rsbday 0.1.0
+```plaintext
+rsbday 1.0.0
 yiren.chow@gmail.com <yiren.chow@gmail.com>
 Check out the people you love who are having birthdays recently!
 
@@ -35,11 +35,12 @@ OPTIONS:
         --db-path <DB>             The path to your database file
 
 SUBCOMMANDS:
+    add      Add a new person's birthday
     help     Prints this message or the help of the given subcommand(s)
-    reset    Reset your sqlite database.
+    reset    Reset your sqlite database
 ```
 
 There are certain TODOs for the future:
 
 - [x] More granular control on date selection
-- [ ] Ability to add new birthdays/entries
+- [x] Ability to add new birthdays/entries

@@ -15,10 +15,18 @@ mod db;
 mod records;
 mod utils;
 
+const PLATFORM_DEFAULT: &str = "wechat";
+
 const SUBCMD_RESET: &str = "reset";
+const SUBCMD_ADD: &str = "add";
+
 const ARG_DAYS: &str = "day-range";
 const ARG_CSV_PATH: &str = "csv-path";
 const ARG_DB_PATH: &str = "db-path";
+const ARG_FNAME: &str = "firstname";
+const ARG_LNAME: &str = "lastname";
+const ARG_BDAY: &str = "birthday";
+const ARG_PLATFORM: &str = "platform";
 
 fn main() {
     // Command-line argument parsing
@@ -45,7 +53,7 @@ fn main() {
         )
         .subcommand(
             SubCommand::with_name(SUBCMD_RESET)
-                .about("Reset your sqlite database.")
+                .about("Reset your sqlite database")
                 .arg(
                     Arg::with_name(ARG_CSV_PATH)
                         .long(ARG_CSV_PATH)
@@ -55,16 +63,53 @@ fn main() {
                         .required(true),
                 ),
         )
+        .subcommand(
+            SubCommand::with_name(SUBCMD_ADD)
+                .about("Add a new person's birthday")
+                .arg(
+                    Arg::with_name(ARG_FNAME)
+                        .long(ARG_FNAME)
+                        .value_name("FIRSTNAME")
+                        .help("The first name of your friend")
+                        .takes_value(true)
+                        .required(true),
+                )
+                .arg(
+                    Arg::with_name(ARG_LNAME)
+                        .long(ARG_LNAME)
+                        .value_name("LASTNAME")
+                        .help("The last name of your friend")
+                        .takes_value(true)
+                        .required(true),
+                )
+                .arg(
+                    Arg::with_name(ARG_BDAY)
+                        .long(ARG_BDAY)
+                        .value_name("BIRTHDAY")
+                        .help("The birthday of your friend in the format of mm/dd")
+                        .takes_value(true)
+                        .required(true),
+                )
+                .arg(
+                    Arg::with_name(ARG_PLATFORM)
+                        .long(ARG_PLATFORM)
+                        .value_name("PLATFORM")
+                        .help("The social media platform of choice to contact your friend")
+                        .takes_value(true)
+                        .required(false),
+                ),
+        )
         .get_matches();
 
     let db_path = matches.value_of(ARG_DB_PATH).unwrap();
-    // Resetting database...
+
+    // Resetting database if necessary...
     let mut csv_path: &str = "";
     let mut reset_required: bool = false;
-    if let Some(matches) = matches.subcommand_matches(SUBCMD_RESET) {
+    if let Some(matches_reset) = matches.subcommand_matches(SUBCMD_RESET) {
         println!("{}", "Resetting database...".yellow());
         reset_required = true;
-        if let Some(csv_val) = matches.value_of(ARG_CSV_PATH) {
+        if let Some(csv_val) = matches_reset.value_of(ARG_CSV_PATH) {
             csv_path = csv_val;
             if Path::new(db_path).exists() {
                 remove_file(db_path).unwrap();
@@ -79,7 +124,30 @@ fn main() {
         let records = preprocessor.read_data().unwrap();
         db.create_table().unwrap();
         db.populate_table_tx(&records).unwrap();
-        println!("{}", "Database has been reset!\n".green())
+        println!("{}", "Database has been reset!\n".green());
+        process::exit(0);
+    }
+
+    // Add a person if necessary...
+    if let Some(matches_add) = matches.subcommand_matches(SUBCMD_ADD) {
+        println!("{}", "Adding a friend...".yellow());
+        let firstname = matches_add.value_of(ARG_FNAME).unwrap();
+        let lastname = matches_add.value_of(ARG_LNAME).unwrap();
+        let birthday = matches_add.value_of(ARG_BDAY).unwrap();
+        let platform = matches_add
+            .value_of(ARG_PLATFORM)
+            .unwrap_or(PLATFORM_DEFAULT);
+        if db
+            .add_birthday(&firstname, &lastname, &birthday, &platform)
+            .unwrap_or(0)
+            == 0
+        {
+            println!("{}", "An unknown error occurred when adding a friend's birthday. Please ensure proper formatting of your argument.".red());
+            process::exit(1);
+        }
+
+        println!("{}", "Success!".green());
+        process::exit(0);
     }
 
     // Retrieve day range...
@@ -146,7 +214,7 @@ fn main() {
                         map_dates
                             .get(&person.birthday)
                             .unwrap()
-                            .format("%b %e %Y")
+                            .format("%b %e")
                             .to_string()
                     )
                     .bright_blue()

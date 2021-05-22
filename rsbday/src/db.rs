@@ -2,7 +2,7 @@ extern crate colored;
 extern crate rusqlite;
 
 use colored::*;
-use rusqlite::{Connection, Result};
+use rusqlite::{params, Connection, Result};
 
 use crate::records;
 
@@ -65,6 +65,19 @@ impl DB {
         }
         tx.commit().unwrap();
         Ok(num_rows_affected)
+    }
+
+    pub fn add_birthday(
+        &self,
+        firstname: &str,
+        lastname: &str,
+        birthday: &str,
+        platform: &str,
+    ) -> Result<usize> {
+        self.conn.execute(
+            QUERY_INSERT,
+            params![firstname, lastname, birthday, platform],
+        )
     }
 
     pub fn fetch_all(&self) -> Option<Vec<records::Row>> {
