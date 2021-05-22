@@ -1,9 +1,12 @@
 use crate::records;
 
+use chrono::prelude::*;
+use chrono::Duration;
+use std::collections::HashMap;
 pub struct Person {
     pub firstname: String,
     pub lastname: String,
-    pub platform: String,
+    pub birthday: String,
 }
 
 pub fn get_month_date(md: &String) -> (u32, u32) {
@@ -17,19 +20,17 @@ pub fn get_month_date(md: &String) -> (u32, u32) {
 }
 
 pub fn happy_birthday(
-    month_target: u32,
-    date_target: u32,
+    map_dates: &HashMap<String, Date<Local>>,
     birthdays: &Vec<records::Row>,
 ) -> Vec<Person> {
     let mut people: Vec<Person> = Vec::new();
 
     for birthday in birthdays {
-        let (month, date) = get_month_date(&birthday.birthday);
-        if month == month_target && date == date_target {
+        if map_dates.contains_key(&birthday.birthday) {
             people.push(Person {
                 firstname: birthday.firstname.clone(),
                 lastname: birthday.lastname.clone(),
-                platform: birthday.platform.clone(),
+                birthday: birthday.birthday.clone(),
             })
         }
     }
