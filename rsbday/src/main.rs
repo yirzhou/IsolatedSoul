@@ -66,37 +66,38 @@ fn main() {
         .subcommand(
             SubCommand::with_name(SUBCMD_ADD)
                 .about("Add a new person's birthday")
+                .version(crate_version!())
                 .arg(
                     Arg::with_name(ARG_FNAME)
-                        .long(ARG_FNAME)
                         .value_name("FIRSTNAME")
                         .help("The first name of your friend")
                         .takes_value(true)
-                        .required(true),
+                        .required(true)
+                        .index(1),
                 )
                 .arg(
                     Arg::with_name(ARG_LNAME)
-                        .long(ARG_LNAME)
                         .value_name("LASTNAME")
                         .help("The last name of your friend")
                         .takes_value(true)
-                        .required(true),
+                        .required(true)
+                        .index(2),
                 )
                 .arg(
                     Arg::with_name(ARG_BDAY)
-                        .long(ARG_BDAY)
                         .value_name("BIRTHDAY")
                         .help("The birthday of your friend in the format of mm/dd")
                         .takes_value(true)
-                        .required(true),
+                        .required(true)
+                        .index(3),
                 )
                 .arg(
                     Arg::with_name(ARG_PLATFORM)
-                        .long(ARG_PLATFORM)
                         .value_name("PLATFORM")
                         .help("The social media platform of choice to contact your friend")
                         .takes_value(true)
-                        .required(false),
+                        .required(false)
+                        .index(4),
                 ),
         )
         .get_matches();
