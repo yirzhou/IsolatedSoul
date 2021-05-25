@@ -1,6 +1,11 @@
 #![no_std] // don't link the Rust standard library
 #![no_main] // disable all Rust-level entry points
+
 use core::panic::PanicInfo;
+
+mod vga_buffer;
+
+static HELLO: &[u8] = b"Hello World!";
 
 // The main function doesn't make sense without
 // an underlying runtime that calls it.
@@ -14,11 +19,14 @@ use core::panic::PanicInfo;
 // allowed to ever return.
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
+    println!("Hello World{}", "!");
+
     loop {}
 }
 
 // This function is called on panic.
 #[panic_handler]
-fn panic(_info: &PanicInfo) -> ! {
+fn panic(info: &PanicInfo) -> ! {
+    println!("{}", info);
     loop {}
 }
