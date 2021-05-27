@@ -1,3 +1,4 @@
+#![feature(alloc_error_handler)]
 #![no_std]
 #![cfg_attr(test, no_main)]
 #![feature(custom_test_frameworks)]
@@ -7,6 +8,9 @@
 
 use core::panic::PanicInfo;
 
+extern crate alloc;
+
+pub mod allocator;
 pub mod gdt;
 pub mod interrupts;
 pub mod memory;
@@ -28,6 +32,11 @@ pub fn hlt_loop() -> ! {
     loop {
         x86_64::instructions::hlt();
     }
+}
+
+#[alloc_error_handler]
+fn alloc_error_handler(layout: alloc::alloc::Layout) -> ! {
+    panic!("allocation error: {:?}", layout)
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
