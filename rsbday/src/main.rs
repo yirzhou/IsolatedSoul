@@ -152,8 +152,8 @@ fn main() {
     }
 
     // Retrieve day range...
-    // The default is 7 days (one week).
-    let mut day_range = 7;
+    // The default is 1 day.
+    let mut day_range = 1;
     if let Some(arg_day_val) = matches.value_of(ARG_DAYS) {
         day_range = arg_day_val.parse::<i64>().unwrap();
     }
