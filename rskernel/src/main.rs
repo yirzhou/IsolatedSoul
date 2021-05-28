@@ -9,7 +9,10 @@ extern crate alloc;
 use alloc::{boxed::Box, rc::Rc, vec, vec::Vec};
 use bootloader::{entry_point, BootInfo};
 use core::panic::PanicInfo;
-use rskernel::println;
+use rskernel::{
+    println,
+    task::{executor::Executor, keyboard, simple_executor::SimpleExecutor, Task},
+};
 use x86_64::{structures::paging::PageTable, VirtAddr};
 
 entry_point!(kernel_main);
@@ -79,11 +82,25 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
     // invoke a breakpoint exception
     x86_64::instructions::interrupts::int3();
 
+    let mut executor = Executor::new();
+    executor.spawn(Task::new(example_task()));
+    executor.spawn(Task::new(keyboard::print_keypresses()));
+    executor.run();
+
     #[cfg(test)]
     test_main();
 
     println!("It did not crash!");
     rskernel::hlt_loop();
+}
+
+async fn async_number() -> u32 {
+    42
+}
+
+async fn example_task() {
+    let number = async_number().await;
+    println!("async number: {}", number);
 }
 
 /// This function is called on panic.
