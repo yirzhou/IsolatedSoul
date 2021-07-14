@@ -1,13 +1,16 @@
 #[macro_use]
 extern crate clap;
 extern crate colored;
-use clap::{App, Arg, SubCommand};
-use colored::*;
+extern crate daemonize;
 
 use chrono::prelude::*;
 use chrono::Duration;
+use clap::{App, Arg, SubCommand};
+use colored::*;
+use daemonize::Daemonize;
 use std::collections::HashMap;
 use std::fs::remove_file;
+use std::fs::File;
 use std::path::Path;
 use std::process;
 
@@ -19,6 +22,7 @@ const PLATFORM_DEFAULT: &str = "wechat";
 
 const SUBCMD_RESET: &str = "reset";
 const SUBCMD_ADD: &str = "add";
+const SUBCMD_DAEMON: &str = "start";
 
 const ARG_DAYS: &str = "day-range";
 const ARG_CSV_PATH: &str = "csv-path";
@@ -62,6 +66,11 @@ fn main() {
                         .takes_value(true)
                         .required(true),
                 ),
+        )
+        .subcommand(
+            SubCommand::with_name(SUBCMD_DAEMON)
+                .about("Start as a daemon process")
+                .version(crate_version!()),
         )
         .subcommand(
             SubCommand::with_name(SUBCMD_ADD)
@@ -127,6 +136,25 @@ fn main() {
         db.populate_table_tx(&records).unwrap();
         println!("{}", "Database has been reset!\n".green());
         process::exit(0);
+    }
+
+    if let Some(_matches_service) = matches.subcommand_matches(SUBCMD_DAEMON) {
+        let stdout = File::create("/tmp/rsbday.out").unwrap();
+        let stderr = File::create("/tmp/rsbday.err").unwrap();
+
+        let daemonize = Daemonize::new()
+            .pid_file("/tmp/rsbday.pid")
+            .working_directory("/tmp") // for default behaviour.
+            .group("staff")
+            .stdout(stdout) // Redirect stdout to `/tmp/daemon.out`.
+            .stderr(stderr) // Redirect stderr to `/tmp/daemon.err`.
+            .exit_action(|| println!("Executed before master process exits"))
+            .privileged_action(|| "Executed before dropping privileges");
+
+        match daemonize.start() {
+            Ok(_) => println!("Success, daemonized"),
+            Err(e) => eprintln!("Error, {}", e),
+        }
     }
 
     // Add a person if necessary...
