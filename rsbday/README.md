@@ -1,4 +1,4 @@
-# rsbday
+# BDay.rs
 
 Get the people having their birthdays yesterday, today, and tomorrow.
 
