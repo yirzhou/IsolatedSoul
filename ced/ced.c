@@ -1,3 +1,59 @@
+#include <ctype.h>
+#include <errno.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <sys/termios.h>
+#include <termios.h>
+#include <unistd.h>
 
-int main() { return 0; }
+struct termios orig_termios;
+
+/**
+ * @brief Error handler.
+ *
+ * @param s
+ */
+void die(const char *s) {
+  perror(s);
+  exit(1);
+}
+
+void disableRawMode() {
+  if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios) == -1) die("tcsetattr");
+}
+
+void enableRawMode() {
+  if (tcgetattr(STDIN_FILENO, &orig_termios) == -1) die("tcgetattr");
+  // Register function that leaves raw mode at exit.
+  atexit(disableRawMode);
+  struct termios raw = orig_termios;
+  // Disable Ctrl-S and Ctrl-Q.
+  // Fix Ctrl-M.
+  raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
+  // Turn off all output processing.
+  raw.c_oflag &= ~(OPOST);
+  raw.c_cflag |= (CS8);
+  // Turn off ECHO mode so that it does not
+  // print out what I am typing.
+  // Also turn of canonical mode and receiving SIGINT and SIGTSTP.
+  // Disable Ctrl-V.
+  raw.c_lflag &= ~(ECHO | ICANON | ISIG | IEXTEN);
+  raw.c_cc[VMIN] = 0;
+  raw.c_cc[VTIME] = 1;
+  if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw) == -1) die("tcsetattr");
+}
+
+int main() {
+  enableRawMode();
+  while (1) {
+    char c = '\0';
+    if (read(STDIN_FILENO, &c, 1) == -1 && errno != EAGAIN) die("read");
+    if (iscntrl(c)) {
+      printf("%d\r\n", c);
+    } else {
+      printf("%d ('%c')\r\n", c, c);
+    }
+    if (c == 'q') break;
+  }
+  return 0;
+}
