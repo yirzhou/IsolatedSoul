@@ -6,8 +6,7 @@
 namespace monkey {
 
 TEST(NextToken, BasicAssertions) {
-  std::unique_ptr<std::string> input =
-      std::make_unique<std::string>("=+(){},;");
+  std::string input("=+(){},;");
 
   const int tests_len = 9;
   Token tests[]{{ASSIGN_T, "="}, {PLUS_T, "+"},      {LPAREN_T, "("},

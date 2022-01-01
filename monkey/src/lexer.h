@@ -7,14 +7,15 @@ namespace monkey {
 
 class Lexer {
  public:
-  Lexer(std::unique_ptr<std::string> input);
+  Lexer(std::string input);
   ~Lexer();
   Token next_token() const;
+  void read_char();
 
  private:
-  std::unique_ptr<std::string> input;
+  const std::string input;
   int position;
-  int readPosition;
+  int read_position;
   char ch;
 };
 
