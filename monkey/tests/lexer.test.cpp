@@ -1,8 +1,6 @@
 #include <gtest/gtest.h>
 #include <lexer.h>
 
-#include <cstdio>
-
 namespace monkey {
 
 TEST(NextToken, BasicAssertions) {
