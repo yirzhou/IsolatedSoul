@@ -3,20 +3,27 @@
 namespace monkey {
 using namespace std;
 
-static const string ILLEGAL_T = "ILLEGAL";
-static const string EOF_T = "EOF";
+typedef string TokenType;
+
+struct Token {
+  TokenType Type;
+  string Literal;
+};
+
+static const TokenType ILLEGAL_T = "ILLEGAL";
+static const TokenType EOF_T = "EOF";
 
 // Identifiers + literals
-static const string IDENT_T = "IDENT";
-static const string INT_T = "INT";
+static const TokenType IDENT_T = "IDENT";
+static const TokenType INT_T = "INT";
 
 // Operators
-static const string ASSIGN_T = "=";
-static const string PLUS_T = "+";
+static const TokenType ASSIGN_T = "=";
+static const TokenType PLUS_T = "+";
 
 // Delimiters
-static const string COMMA_T = ",";
-static const string SEMICOLON_T = ";";
+static const TokenType COMMA_T = ",";
+static const TokenType SEMICOLON_T = ";";
 
 static const string LPAREN_T = "(";
 static const string RPAREN_T = ")";
@@ -24,6 +31,6 @@ static const string LBRACE_T = "{";
 static const string RBRACE_T = "}";
 
 // Keywords
-static const string FUNCTION_T = "FUNCTION";
-static const string LET_T = "LET";
+static const TokenType FUNCTION_T = "FUNCTION";
+static const TokenType LET_T = "LET";
 }  // namespace monkey
