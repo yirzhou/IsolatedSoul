@@ -29,6 +29,24 @@ Token Lexer::next_token() {
     case '+':
       tok.Type = PLUS_T;
       break;
+    case '-':
+      tok.Type = MINUS_T;
+      break;
+    case '!':
+      tok.Type = BANG_T;
+      break;
+    case '/':
+      tok.Type = SLASH_T;
+      break;
+    case '*':
+      tok.Type = ASTERISK_T;
+      break;
+    case '<':
+      tok.Type = LT_T;
+      break;
+    case '>':
+      tok.Type = GT_T;
+      break;
     case '{':
       tok.Type = LBRACE_T;
       break;
