@@ -9,7 +9,7 @@ class Lexer {
  public:
   Lexer(std::string input);
   ~Lexer();
-  Token next_token() const;
+  Token next_token();
   void read_char();
 
  private:
