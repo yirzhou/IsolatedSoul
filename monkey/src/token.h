@@ -1,4 +1,5 @@
 #include <string>
+#include <unordered_map>
 
 namespace monkey {
 using namespace std;
@@ -33,4 +34,9 @@ static const string RBRACE_T = "}";
 // Keywords
 static const TokenType FUNCTION_T = "FUNCTION";
 static const TokenType LET_T = "LET";
+
+static const unordered_map<string, TokenType> keywords{{"fn", FUNCTION_T},
+                                                       {"let", LET_T}};
+
+TokenType lookup_ident(string ident);
 }  // namespace monkey
