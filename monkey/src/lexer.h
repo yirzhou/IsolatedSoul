@@ -20,6 +20,7 @@ class Lexer {
   bool is_letter(char ch) const;
   bool is_digit(char ch) const;
   void read_char();
+  char peek_char() const;
   std::string read_identifier();
   std::string read_number();
   void skip_whitespace();

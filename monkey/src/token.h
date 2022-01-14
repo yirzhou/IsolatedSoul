@@ -46,6 +46,9 @@ static const TokenType IF_T = "IF";
 static const TokenType ELSE_T = "ELSE";
 static const TokenType RETURN_T = "RETURN";
 
+static const TokenType EQ_T = "==";
+static const TokenType NOT_EQ_T = "!=";
+
 static const unordered_map<string, TokenType> keywords{
     {"fn", FUNCTION_T},  {"let", LET_T}, {"true", TRUE_T},
     {"false", FALSE_T},  {"if", IF_T},   {"else", ELSE_T},

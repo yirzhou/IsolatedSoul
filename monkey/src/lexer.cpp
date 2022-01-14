@@ -12,7 +12,14 @@ Token Lexer::next_token() {
 
   switch (ch) {
     case '=':
-      tok.Type = ASSIGN_T;
+      if (peek_char() == '=') {
+        char c = ch;
+        read_char();
+        tok.Type = EQ_T;
+        tok.Literal = std::string(1, c) + std::string(1, ch);
+      } else {
+        tok.Type = ASSIGN_T;
+      }
       break;
     case ';':
       tok.Type = SEMICOLON_T;
@@ -74,6 +81,7 @@ Token Lexer::next_token() {
   read_char();
   return tok;
 }
+
 void Lexer::read_char() {
   if (read_position >= input.size()) {
     ch = '\0';
@@ -82,6 +90,14 @@ void Lexer::read_char() {
   }
   position = read_position;
   read_position++;
+}
+
+char Lexer::peek_char() const {
+  if (read_position >= input.size()) {
+    return '\0';
+  } else {
+    return input[read_position];
+  }
 }
 
 std::string Lexer::read_number() {

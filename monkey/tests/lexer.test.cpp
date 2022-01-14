@@ -19,7 +19,9 @@ TEST(NextToken, BasicAssertions) {
       "  return true;"
       "} else {"
       "  return false;"
-      "}";
+      "}"
+      "10 == 10;"
+      "10 != 9;";
 
   std::vector<Token> tests{
       {LET_T, "let"},      {IDENT_T, "five"},    {ASSIGN_T, "="},
